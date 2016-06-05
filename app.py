@@ -1,4 +1,4 @@
-import requests, json, sys
+import requests, json, sys, argparse
 from urllib import request
 from os import path, system, environ
 
@@ -31,18 +31,19 @@ def get_desktop_environment():
     print(environ.get('DESKTOP_SESSION'))  
 
 def main():
-    option = 2
-    
-    if option == 1:
-        print('Set the following image of the day as wallpaper')
-        img_path = download_json(api_url_iotd)
-        set_wallpaper(img_path)
-    elif option == 2:
+    parser = argparse.ArgumentParser(description="Download Bing image of the day and set as wallpaper")
+    parser.add_argument('--download','-d',
+                    help='Download the last eight Bing of the day images',
+                    action="store_true")
+    args = parser.parse_args()
+
+    if args.download:
         print('Saving the following images of the day to the system')
         download_json(api_url_last8)
     else:
-        get_desktop_environment()
-
-
+        print('Set the following image of the day as wallpaper')
+        img_path = download_json(api_url_iotd)
+        set_wallpaper(img_path)
+        
 if __name__ == '__main__':
     main()
