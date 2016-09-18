@@ -1,6 +1,7 @@
 import requests, json, sys, argparse
 from urllib import request
 from os import path, system, environ
+import ctypes
 
 api_url_iotd = "http://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1"
 api_url_last8 = "http://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=8"
@@ -24,11 +25,22 @@ def download_json(api_url):
         print('Unexpected Error in function download_json')
 
 def set_wallpaper(image_path):
-    wallpaper_command = 'gsettings set org.gnome.desktop.background picture-uri file://'+image_path
-    system(wallpaper_command)  
+    DE = get_desktop_environment()
+    print('Platform is:', DE)
+    
+    if DE == 'WINDOWS':
+        SPI_SETDESKWALLPAPER = 20 
+        print(image_path)
+        ctypes.windll.user32.SystemParametersInfoW(SPI_SETDESKWALLPAPER, 0, image_path , 3)
+    else:
+        wallpaper_command = 'gsettings set org.gnome.desktop.background picture-uri file://'+image_path
+        system(wallpaper_command)
 
 def get_desktop_environment():
-    print(environ.get('DESKTOP_SESSION'))  
+    if sys.platform in ['win32','cygwin']:
+        return ('WINDOWS')
+    else:
+        return (environ.get('DESKTOP_SESSION'))  
 
 def main():
     parser = argparse.ArgumentParser(description="Download Bing image of the day and set as wallpaper")
