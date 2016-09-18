@@ -32,7 +32,7 @@ def set_wallpaper(image_path):
         SPI_SETDESKWALLPAPER = 20 
         print(image_path)
         ctypes.windll.user32.SystemParametersInfoW(SPI_SETDESKWALLPAPER, 0, image_path , 3)
-    elif DE == 'mate'
+    elif DE == 'mate':
         system("gsettings set org.mate.background picture-filename '%s'" % image_path)
     else:
         wallpaper_command = 'gsettings set org.gnome.desktop.background picture-uri file://'+image_path
