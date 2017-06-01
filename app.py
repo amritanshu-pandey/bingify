@@ -1,4 +1,4 @@
-import requests, json, sys, argparse
+import requests, json, sys, argparse, dbus
 from urllib import request
 #import urllib2
 from os import path, system, environ
@@ -35,6 +35,20 @@ def set_wallpaper(image_path):
         ctypes.windll.user32.SystemParametersInfoW(SPI_SETDESKWALLPAPER, 0, image_path , 3)
     elif DE == 'mate':
         system("gsettings set org.mate.background picture-filename '%s'" % image_path)
+    elif DE == '/usr/share/xsessions/plasma':
+        jscript = """
+                    var allDesktops = desktops();
+                    print (allDesktops);
+                    for (i=0;i<allDesktops.length;i++) {
+                    d = allDesktops[i];
+                    d.wallpaperPlugin = "org.kde.image";
+                    d.currentConfigGroup = Array("Wallpaper", "org.kde.image", "General");
+                    d.writeConfig("Image", "file://%s")
+                    }
+                """
+        bus = dbus.SessionBus();
+        plasma = dbus.Interface(bus.get_object('org.kde.plasmashell', '/PlasmaShell'), dbus_interface='org.kde.PlasmaShell');
+        plasma.evaluateScript(jscript % image_path);
     else:
         wallpaper_command = 'gsettings set org.gnome.desktop.background picture-uri file://'+image_path
         system(wallpaper_command)
