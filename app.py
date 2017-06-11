@@ -1,4 +1,4 @@
-import requests, json, sys, argparse, dbus
+import requests, json, sys, argparse
 from urllib import request
 #import urllib2
 from os import path, system, environ
@@ -36,6 +36,7 @@ def set_wallpaper(image_path):
     elif DE == 'mate':
         system("gsettings set org.mate.background picture-filename '%s'" % image_path)
     elif DE == '/usr/share/xsessions/plasma':
+        import dbus
         jscript = """
                     var allDesktops = desktops();
                     print (allDesktops);
