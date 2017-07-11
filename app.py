@@ -51,7 +51,7 @@ def set_wallpaper(image_path):
         plasma = dbus.Interface(bus.get_object('org.kde.plasmashell', '/PlasmaShell'), dbus_interface='org.kde.PlasmaShell');
         plasma.evaluateScript(jscript % image_path);
     if DE == 'i3':
-        wallpaper_command = 'feh --bg-scale '+image_path
+        wallpaper_command = 'feh --bg-fill '+image_path
         system(wallpaper_command)
     else:
         wallpaper_command = 'gsettings set org.gnome.desktop.background picture-uri file://'+image_path
